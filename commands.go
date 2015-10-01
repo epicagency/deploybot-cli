@@ -27,8 +27,8 @@ func listEnvironments() {
 		environments *Environments
 		err          error
 	)
-	if *listEnvironmentRepositoryId != 0 {
-		environments, err = bot.GetEnvironmentsByRepository(*listEnvironmentRepositoryId)
+	if *repositoryIdFlag != 0 {
+		environments, err = bot.GetEnvironmentsByRepository(*repositoryIdFlag)
 	} else {
 		environments, err = bot.GetEnvironments()
 	}
@@ -60,6 +60,31 @@ func listUsers() {
 		fmt.Printf("%d: %s %s (%s)\n", user.Id, user.FirstName, user.LastName, user.Email)
 		if *verbose {
 			fmt.Printf("\tTimezone: %s\n\tIs admin?: %t\n\tCreated at: %s\n\tUpdated at: %s\n", user.Timezone, user.IsAdmin, user.CreatedAt, user.UpdatedAt)
+		}
+	}
+}
+
+func listServers() {
+	var (
+		servers *Servers
+		err     error
+	)
+	if *environmentIdFlag != 0 {
+		servers, err = bot.GetServersByEnvironment(*environmentIdFlag)
+	} else if *repositoryIdFlag != 0 {
+		servers, err = bot.GetServersByRepository(*repositoryIdFlag)
+	} else {
+		servers, err = bot.GetServers()
+	}
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
+	for _, server := range servers.Entries {
+		fmt.Printf("%d: %s\n", server.Id, server.Name)
+		if *verbose {
+			fmt.Printf("\tProtocol: %s\n\tRepository id: %d\n\tEnvironment Id: %d\n\tCreated: %s\n\tUpdated: %s\n", server.Protocol, server.RepositoryId, server.EnvironmentId, server.CreatedAt, server.UpdatedAt)
 		}
 	}
 }

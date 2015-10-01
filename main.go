@@ -7,15 +7,16 @@ import (
 )
 
 var (
-	app                         = kingpin.New("deploybot-cli", "DeployBot command line client")
-	verbose                     = app.Flag("verbose", "Verbose").Short('v').Bool()
-	listCommand                 = app.Command("list", "List repositories, environments, servers, users.")
-	listRepositoriesCommand     = listCommand.Command("repositories", "List repositories.")
-	listEnvironmentsCommand     = listCommand.Command("environments", "List environments.")
-	listEnvironmentRepositoryId = listEnvironmentsCommand.Flag("repository_id", "Repository id to list environments from").Short('r').Int()
-	listServersCommand          = listCommand.Command("servers", "List servers.")
-	listUsersCommand            = listCommand.Command("users", "List users.")
-	bot                         = &DeployBot{}
+	app                     = kingpin.New("deploybot-cli", "DeployBot command line client")
+	verbose                 = app.Flag("verbose", "Verbose").Short('v').Bool()
+	repositoryIdFlag        = app.Flag("repository_id", "Repository id (applies to select commands)").Short('r').Int()
+	environmentIdFlag       = app.Flag("environment_id", "Environment id (applies to select commands)").Short('e').Int()
+	listCommand             = app.Command("list", "List repositories, environments, servers, users.")
+	listRepositoriesCommand = listCommand.Command("repositories", "List repositories.")
+	listEnvironmentsCommand = listCommand.Command("environments", "List environments (optionnaly filter by repository).")
+	listServersCommand      = listCommand.Command("servers", "List servers (optionnaly filter by repository or environment).")
+	listUsersCommand        = listCommand.Command("users", "List users.")
+	bot                     = &DeployBot{}
 )
 
 func main() {
@@ -33,6 +34,7 @@ func main() {
 	case listEnvironmentsCommand.FullCommand():
 		listEnvironments()
 	case listServersCommand.FullCommand():
+		listServers()
 	case listUsersCommand.FullCommand():
 		listUsers()
 	}
