@@ -104,6 +104,20 @@ func (d *DeployBot) GetEnvironments() (*Environments, error) {
 	return &environments, err
 }
 
+func (d *DeployBot) GetEnvironmentsByRepository(repositoryId int) (*Environments, error) {
+	content, err := d.getContent(fmt.Sprintf("environments?repository_id=%d", repositoryId))
+	if err != nil {
+		return nil, err
+	}
+	var environments Environments
+	err = json.Unmarshal(content, &environments)
+	if err != nil {
+		return nil, err
+	}
+
+	return &environments, err
+}
+
 func (d *DeployBot) GetEnvironment(id int) (*Environment, error) {
 	content, err := d.getContent(fmt.Sprintf("environments/%d", id))
 	if err != nil {
