@@ -95,4 +95,4 @@ Most welcome! :) Just fork and PR away!
 
 ## License
 
-MIT: See LICENSE
+BSD-Like: See LICENSE
