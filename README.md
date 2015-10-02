@@ -28,12 +28,17 @@ usage: deploybot-cli [<flags>] <command> [<args> ...]
 DeployBot command line client
 
 Flags:
-  --help         Show context-sensitive help (also try --help-long and --help-man).
+  --help         Show context-sensitive help (also try --help-long and
+                 --help-man).
   -v, --verbose  Verbose
-  -r, --repository_id=REPOSITORY_ID
+  -r, --repository_id=REPOSITORY_ID  
                  Repository id (applies to select commands)
-  -e, --environment_id=ENVIRONMENT_ID
+  -e, --environment_id=ENVIRONMENT_ID  
                  Environment id (applies to select commands)
+  -u, --user_id=USER_ID  
+                 User id (applies to select commands)
+  -s, --server_id=SERVER_ID  
+                 Server id (applies to select commands)
 
 Commands:
   help [<command>...]
@@ -50,6 +55,18 @@ Commands:
 
   list users
     List users.
+
+  show repository
+    Show repository details (and environments if verbose is set).
+
+  show environment
+    Show environment details (and servers if verbose is set).
+
+  show server
+    Show server details.
+
+  show user
+    Show user details.
 ```
 
 ## Contributions
