@@ -67,6 +67,9 @@ Commands:
 
   show user
     Show user details.
+
+  refresh
+    Refresh a repository
 ```
 
 ## Contributions

@@ -23,6 +23,7 @@ var (
 	showEnvironmentCommand  = showCommand.Command("environment", "Show environment details (and servers if verbose is set).")
 	showServerCommand       = showCommand.Command("server", "Show server details.")
 	showUserCommand         = showCommand.Command("user", "Show user details.")
+	refreshCommand          = app.Command("refresh", "Refresh a repository")
 	bot                     = &DeployBot{}
 )
 
@@ -52,5 +53,7 @@ func main() {
 		showServer()
 	case showUserCommand.FullCommand():
 		showUser()
+	case refreshCommand.FullCommand():
+		refreshRepository()
 	}
 }

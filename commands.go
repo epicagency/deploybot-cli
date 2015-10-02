@@ -157,3 +157,17 @@ func showServer() {
 		fmt.Printf("\tProtocol: %s\n\tRepository id: %d\n\tEnvironment Id: %d\n\tCreated: %s\n\tUpdated: %s\n", server.Protocol, server.RepositoryId, server.EnvironmentId, server.CreatedAt, server.UpdatedAt)
 	}
 }
+
+func refreshRepository() {
+	var (
+		repository *Repository
+		err        error
+	)
+
+	repository, err = bot.GetRepository(*repositoryIdFlag)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
+	bot.Refresh(repository)
+}

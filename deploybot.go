@@ -18,6 +18,27 @@ type DeployBot struct {
 	Config *Config
 }
 
+func (d *DeployBot) getRawContent(url string) ([]byte, error) {
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return body, nil
+}
+
 func (d *DeployBot) getContent(url string) ([]byte, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf("https://%s.deploybot.com/api/v1/%s", d.Config.Domain, url), nil)
 	req.Header.Add("X-Api-Token", d.Config.Token)
@@ -271,4 +292,13 @@ func (d *DeployBot) GetServer(id int) (*Server, error) {
 	}
 
 	return &server, err
+}
+
+func (d *DeployBot) Refresh(repository *Repository) error {
+	content, err := d.getRawContent(repository.RefreshWebhookUrl)
+	if err != nil {
+		return err
+	}
+	fmt.Println(string(content))
+	return nil
 }
