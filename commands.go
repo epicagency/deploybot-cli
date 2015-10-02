@@ -196,9 +196,8 @@ func deployEnvironment() {
 		fmt.Printf("\t%s\n", deployment.Comment)
 	}
 	lastState := deployment.State
-	running := deployment.IsRunning()
 	if *deployWaitForCompletionFlag {
-		for running {
+		for {
 			deployment, err = bot.GetDeployment(deployment.Id)
 			if err != nil {
 				fmt.Println(err)
@@ -210,7 +209,9 @@ func deployEnvironment() {
 				lastState = deployment.State
 			}
 			time.Sleep(1000 * time.Millisecond)
-			running = deployment.IsRunning()
+			if !deployment.IsRunning() {
+				break
+			}
 		}
 		fmt.Printf("\nLast state: %s on %s\n", deployment.State, deployment.DeployedAt)
 	}
