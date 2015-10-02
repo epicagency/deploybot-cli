@@ -9,6 +9,7 @@ import (
 type Config struct {
 	Token  string
 	Domain string
+	User   int
 }
 
 func (c *Config) Load(path string) error {

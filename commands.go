@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 )
 
 func listRepositories() {
@@ -170,4 +171,47 @@ func refreshRepository() {
 		os.Exit(-1)
 	}
 	bot.Refresh(repository)
+}
+
+func deployEnvironment() {
+	var deploySetting DeploymentSetting
+	deploySetting.EnvironmentId = *environmentIdFlag
+	if *userIdFlag != 0 {
+		deploySetting.UserId = *userIdFlag
+	} else if config.User != 0 {
+		deploySetting.UserId = config.User
+	}
+	deploySetting.DeployedVersion = *deployDeployedVersionFlag
+	deploySetting.DeployFromScratch = *deployFromScratchFlag
+	deploySetting.TriggerNotifications = !*deployDontTriggerNotificationsFlag
+	deploySetting.Comment = *deployCommentArg
+
+	deployment, err := bot.TriggerDeployment(deploySetting)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
+	fmt.Printf("Deployment %d: %s (%s), retries: %d\n", deployment.Id, deployment.DeployedVersion, deployment.State, deployment.Retries)
+	if deployment.Comment != "" {
+		fmt.Printf("\t%s\n", deployment.Comment)
+	}
+	lastState := deployment.State
+	running := deployment.IsRunning()
+	if *deployWaitForCompletionFlag {
+		for running {
+			deployment, err = bot.GetDeployment(deployment.Id)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(-1)
+			}
+			fmt.Print(".")
+			if lastState != deployment.State {
+				fmt.Printf("\nCurrent state: %s\n", deployment.State)
+				lastState = deployment.State
+			}
+			time.Sleep(1000 * time.Millisecond)
+			running = deployment.IsRunning()
+		}
+		fmt.Printf("\nLast state: %s on %s\n", deployment.State, deployment.DeployedAt)
+	}
 }

@@ -70,7 +70,19 @@ Commands:
 
   refresh
     Refresh a repository
+
+  deploy [<flags>] [<comment>]
+    Deploy an environment, user is choosen from (in order) user_id flag, User config
+    key, account owner
+
 ```
+
+## TODO
+
+* Lots and lots of better error handling
+* Probably a few refactoring to be more idiomatic to Go
+* Paging
+* ...
 
 ## Contributions
 

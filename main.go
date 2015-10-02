@@ -24,16 +24,17 @@ var (
 	showServerCommand                  = showCommand.Command("server", "Show server details.")
 	showUserCommand                    = showCommand.Command("user", "Show user details.")
 	refreshCommand                     = app.Command("refresh", "Refresh a repository")
-	deployCommand                      = app.Command("deploy", "Deploy an environment")
+	deployCommand                      = app.Command("deploy", "Deploy an environment, user is choosen from (in order) user_id flag, User config key, account owner")
 	deployFromScratchFlag              = deployCommand.Flag("from_scratch", "Deploy everything again").Short('a').Bool()
+	deployDeployedVersionFlag          = deployCommand.Flag("version", "Version to deploy (default to latest)").Short('c').String()
 	deployDontTriggerNotificationsFlag = deployCommand.Flag("no_trigger", "Don't trigger notifications").Short('t').Bool()
 	deployWaitForCompletionFlag        = deployCommand.Flag("wait", "Wait until deploy is over").Short('w').Bool()
 	deployCommentArg                   = deployCommand.Arg("comment", "Add a comment to deploy").String()
 	bot                                = &DeployBot{}
+	config                             = &Config{}
 )
 
 func main() {
-	config := &Config{}
 	if err := config.Load(""); err != nil {
 		fmt.Println("Unable to read config, please create a ~/.deploybot.toml with a token and a domain")
 		fmt.Println(err)
@@ -60,5 +61,7 @@ func main() {
 		showUser()
 	case refreshCommand.FullCommand():
 		refreshRepository()
+	case deployCommand.FullCommand():
+		deployEnvironment()
 	}
 }

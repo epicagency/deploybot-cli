@@ -195,9 +195,9 @@ func (d *DeployBot) GetDeployment(id int) (*Deployment, error) {
 	return &deployment, err
 }
 
-func (d *DeployBot) TriggerDeployment(environmentId int) (*Deployment, error) {
-	content, err := d.postContent("deployments", fmt.Sprintf("{\"environment_id\": %d}", environmentId))
-	fmt.Println(string(content))
+func (d *DeployBot) TriggerDeployment(settings DeploymentSetting) (*Deployment, error) {
+	body, _ := json.Marshal(settings)
+	content, err := d.postContent("deployments", string(body))
 	if err != nil {
 		return nil, err
 	}
