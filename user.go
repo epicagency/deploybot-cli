@@ -13,5 +13,5 @@ type User struct {
 
 type Users struct {
 	Meta    Meta
-	Entries []User
+	Entries []*User
 }

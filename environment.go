@@ -16,5 +16,5 @@ type Environment struct {
 
 type Environments struct {
 	Meta    Meta
-	Entries []Environment
+	Entries []*Environment
 }

@@ -13,5 +13,5 @@ type Repository struct {
 
 type Repositories struct {
 	Meta    Meta
-	Entries []Repository
+	Entries []*Repository
 }

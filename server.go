@@ -14,5 +14,5 @@ type Server struct {
 
 type Servers struct {
 	Meta    Meta
-	Entries []Server
+	Entries []*Server
 }

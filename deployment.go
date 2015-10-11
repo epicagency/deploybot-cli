@@ -19,7 +19,7 @@ type Deployment struct {
 
 type Deployments struct {
 	Meta    Meta
-	Entries []Deployment
+	Entries []*Deployment
 }
 
 type DeploymentSetting struct {
