@@ -75,6 +75,11 @@ Commands:
     Deploy an environment, user is choosen from (in order) user_id flag, User config
     key, account owner
 
+  aliases
+    Build a list of aliases from repositories and environments
+
+  dump-config
+    Dump current configuration
 ```
 
 ## TODO
@@ -83,6 +88,10 @@ Commands:
 * Probably a few refactoring to be more idiomatic to Go
 * Paging
 * ...
+
+## Notes
+
+This package uses a simple incremental versioning a-la SystemD. A decimal indicate a bugfix only.
 
 ## Contributions
 

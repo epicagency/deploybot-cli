@@ -1,4 +1,4 @@
-WIP
+v1
 --
 
 * [CHANGE] DRYed up the code a bit
