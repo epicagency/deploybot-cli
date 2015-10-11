@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"os"
@@ -10,7 +11,7 @@ var (
 	app                                = kingpin.New("deploybot-cli", "DeployBot command line client")
 	verbose                            = app.Flag("verbose", "Verbose").Short('v').Bool()
 	repositoryIdFlag                   = app.Flag("repository_id", "Repository id (applies to select commands)").Short('r').Int()
-	environmentIdFlag                  = app.Flag("environment_id", "Environment id (applies to select commands)").Short('e').Int()
+	environmentIdFlag                  = app.Flag("environment_id", "Environment id (applies to select commands)").Short('e').String()
 	userIdFlag                         = app.Flag("user_id", "User id (applies to select commands)").Short('u').Int()
 	serverIdFlag                       = app.Flag("server_id", "Server id (applies to select commands)").Short('s').Int()
 	listCommand                        = app.Command("list", "List repositories, environments, servers, users.")
@@ -30,6 +31,8 @@ var (
 	deployDontTriggerNotificationsFlag = deployCommand.Flag("no_trigger", "Don't trigger notifications").Short('t').Bool()
 	deployWaitForCompletionFlag        = deployCommand.Flag("wait", "Wait until deploy is over").Short('w').Bool()
 	deployCommentArg                   = deployCommand.Arg("comment", "Add a comment to deploy").String()
+	aliasesCommand                     = app.Command("aliases", "Build a list of aliases from repositories and environments")
+	dumpConfigCommand                  = app.Command("dump-config", "Dump current configuration")
 	bot                                = &DeployBot{}
 	config                             = &Config{}
 )
@@ -63,5 +66,11 @@ func main() {
 		refreshRepository()
 	case deployCommand.FullCommand():
 		deployEnvironment()
+	case aliasesCommand.FullCommand():
+		exportAliases()
+	case dumpConfigCommand.FullCommand():
+		b, _ := json.Marshal(config)
+		os.Stdout.Write(b)
+
 	}
 }

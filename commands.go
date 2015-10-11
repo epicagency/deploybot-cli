@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/extemporalgenome/slug"
 	"os"
 	"time"
 )
@@ -67,7 +68,8 @@ func showEnvironment() {
 		environment *Environment
 		err         error
 	)
-	environment, err = bot.GetEnvironment(*environmentIdFlag)
+	id, _ := config.Alias(*environmentIdFlag)
+	environment, err = bot.GetEnvironment(id)
 
 	if err != nil {
 		fmt.Println(err)
@@ -121,8 +123,9 @@ func listServers() {
 		servers *Servers
 		err     error
 	)
-	if *environmentIdFlag != 0 {
-		servers, err = bot.GetServersByEnvironment(*environmentIdFlag)
+	if environmentIdFlag != nil {
+		id, _ := config.Alias(*environmentIdFlag)
+		servers, err = bot.GetServersByEnvironment(id)
 	} else if *repositoryIdFlag != 0 {
 		servers, err = bot.GetServersByRepository(*repositoryIdFlag)
 	} else {
@@ -175,7 +178,8 @@ func refreshRepository() {
 
 func deployEnvironment() {
 	var deploySetting DeploymentSetting
-	deploySetting.EnvironmentId = *environmentIdFlag
+	id, _ := config.Alias(*environmentIdFlag)
+	deploySetting.EnvironmentId = id
 	if *userIdFlag != 0 {
 		deploySetting.UserId = *userIdFlag
 	} else if config.User != 0 {
@@ -215,4 +219,33 @@ func deployEnvironment() {
 		}
 		fmt.Printf("\nLast state: %s on %s\n", deployment.State, deployment.DeployedAt)
 	}
+}
+
+func exportAliases() {
+	var (
+		repositories *Repositories
+		environments *Environments
+		environment  *Environment
+		err          error
+	)
+	if repositories, err = bot.GetRepositories(); err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
+	if environments, err = bot.GetEnvironments(); err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
+	mappedEnvironments := make(map[int][]*Environment)
+	for _, environment = range environments.Entries {
+		mappedEnvironments[environment.RepositoryId] = append(mappedEnvironments[environment.RepositoryId], environment)
+	}
+
+	fmt.Printf("[aliases]\n")
+	for _, repository := range repositories.Entries {
+		for _, environment := range mappedEnvironments[repository.Id] {
+			fmt.Printf("%s-%s = %d\n", slug.Slug(repository.Title), slug.Slug(environment.Name), environment.Id)
+		}
+	}
+
 }
