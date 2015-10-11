@@ -83,116 +83,84 @@ func (d *DeployBot) postContent(url string, post_body string) ([]byte, error) {
 	return body, nil
 }
 
-func (d *DeployBot) GetRepositories() (*Repositories, error) {
-	content, err := d.getContent("repositories")
+func (d *DeployBot) fetch(path string, v interface{}) error {
+	content, err := d.getContent(path)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	var repositories Repositories
-	err = json.Unmarshal(content, &repositories)
-	if err != nil {
-		return nil, err
-	}
+	return json.Unmarshal(content, v)
+}
 
-	return &repositories, err
+func (d *DeployBot) GetRepositories() (*Repositories, error) {
+	repositories := new(Repositories)
+	err := d.fetch("repositories", repositories)
+	if err != nil {
+		return nil, err
+	}
+	return repositories, err
 }
 
 func (d *DeployBot) GetRepository(id int) (*Repository, error) {
-	content, err := d.getContent(fmt.Sprintf("repositories/%d", id))
+	repository := new(Repository)
+	err := d.fetch(fmt.Sprintf("repositories/%d", id), repository)
 	if err != nil {
 		return nil, err
 	}
-	var repository Repository
-	err = json.Unmarshal(content, &repository)
-	if err != nil {
-		return nil, err
-	}
-
-	return &repository, err
+	return repository, err
 }
 
 func (d *DeployBot) GetEnvironments() (*Environments, error) {
-	content, err := d.getContent("environments")
+	environments := new(Environments)
+	err := d.fetch("environments", environments)
 	if err != nil {
 		return nil, err
 	}
-	var environments Environments
-	err = json.Unmarshal(content, &environments)
-	if err != nil {
-		return nil, err
-	}
-
-	return &environments, err
+	return environments, err
 }
 
 func (d *DeployBot) GetEnvironmentsByRepository(repositoryId int) (*Environments, error) {
-	content, err := d.getContent(fmt.Sprintf("environments?repository_id=%d", repositoryId))
+	environments := new(Environments)
+	err := d.fetch(fmt.Sprintf("environments?repository_id=%d", repositoryId), environments)
 	if err != nil {
 		return nil, err
 	}
-	var environments Environments
-	err = json.Unmarshal(content, &environments)
-	if err != nil {
-		return nil, err
-	}
-
-	return &environments, err
+	return environments, err
 }
 
 func (d *DeployBot) GetEnvironment(id int) (*Environment, error) {
-	content, err := d.getContent(fmt.Sprintf("environments/%d", id))
+	environment := new(Environment)
+	err := d.fetch(fmt.Sprintf("environments/%d", id), environment)
 	if err != nil {
 		return nil, err
 	}
-	var environment Environment
-	err = json.Unmarshal(content, &environment)
-	if err != nil {
-		return nil, err
-	}
-
-	return &environment, err
+	return environment, err
 }
 
 func (d *DeployBot) GetDeploymentsByRepository(repositoryId int) (*Deployments, error) {
-	content, err := d.getContent(fmt.Sprintf("repository_id=%d", repositoryId))
+	deployments := new(Deployments)
+	err := d.fetch(fmt.Sprintf("repository_id=%d", repositoryId), deployments)
 	if err != nil {
 		return nil, err
 	}
-	var deployments Deployments
-	err = json.Unmarshal(content, &deployments)
-	if err != nil {
-		return nil, err
-	}
-
-	return &deployments, err
+	return deployments, err
 }
 
 func (d *DeployBot) GetDeploymentsByEnvironment(environmentId int) (*Deployments, error) {
-	content, err := d.getContent(fmt.Sprintf("deployments?environment_id=%d", environmentId))
+	deployments := new(Deployments)
+	err := d.fetch(fmt.Sprintf("deployments?environment_id=%d", environmentId), deployments)
 	if err != nil {
 		return nil, err
 	}
-	var deployments Deployments
-	err = json.Unmarshal(content, &deployments)
-	if err != nil {
-		return nil, err
-	}
-
-	return &deployments, err
+	return deployments, err
 }
 
 func (d *DeployBot) GetDeployment(id int) (*Deployment, error) {
-	content, err := d.getContent(fmt.Sprintf("deployments/%d", id))
+	deployment := new(Deployment)
+	err := d.fetch(fmt.Sprintf("deployments/%d", id), deployment)
 	if err != nil {
 		return nil, err
 	}
-	var deployment Deployment
-	err = json.Unmarshal(content, &deployment)
-	if err != nil {
-		return nil, err
-	}
-
-	return &deployment, err
+	return deployment, err
 }
 
 func (d *DeployBot) TriggerDeployment(settings DeploymentSetting) (*Deployment, error) {
@@ -211,87 +179,57 @@ func (d *DeployBot) TriggerDeployment(settings DeploymentSetting) (*Deployment, 
 }
 
 func (d *DeployBot) GetUsers() (*Users, error) {
-	content, err := d.getContent("users")
+	users := new(Users)
+	err := d.fetch("users", users)
 	if err != nil {
 		return nil, err
 	}
-	var users Users
-	err = json.Unmarshal(content, &users)
-	if err != nil {
-		return nil, err
-	}
-
-	return &users, err
+	return users, err
 }
 
 func (d *DeployBot) GetUser(id int) (*User, error) {
-	content, err := d.getContent(fmt.Sprintf("users/%d", id))
+	user := new(User)
+	err := d.fetch(fmt.Sprintf("users/%d", id), user)
 	if err != nil {
 		return nil, err
 	}
-	var user User
-	err = json.Unmarshal(content, &user)
-	if err != nil {
-		return nil, err
-	}
-
-	return &user, err
+	return user, err
 }
 
 func (d *DeployBot) GetServers() (*Servers, error) {
-	content, err := d.getContent("servers")
+	servers := new(Servers)
+	err := d.fetch("servers", servers)
 	if err != nil {
 		return nil, err
 	}
-	var servers Servers
-	err = json.Unmarshal(content, &servers)
-	if err != nil {
-		return nil, err
-	}
-
-	return &servers, err
+	return servers, err
 }
 
 func (d *DeployBot) GetServersByEnvironment(environmentId int) (*Servers, error) {
-	content, err := d.getContent(fmt.Sprintf("servers?environment_id=%d", environmentId))
+	servers := new(Servers)
+	err := d.fetch(fmt.Sprintf("servers?environment_id=%d", environmentId), servers)
 	if err != nil {
 		return nil, err
 	}
-	var servers Servers
-	err = json.Unmarshal(content, &servers)
-	if err != nil {
-		return nil, err
-	}
-
-	return &servers, err
+	return servers, err
 }
 
 func (d *DeployBot) GetServersByRepository(repositoryId int) (*Servers, error) {
-	content, err := d.getContent(fmt.Sprintf("servers?repository_id=%d", repositoryId))
+	servers := new(Servers)
+	err := d.fetch(fmt.Sprintf("servers?repository_id=%d", repositoryId), servers)
 	if err != nil {
 		return nil, err
 	}
-	var servers Servers
-	err = json.Unmarshal(content, &servers)
-	if err != nil {
-		return nil, err
-	}
-
-	return &servers, err
+	return servers, err
 }
 
 func (d *DeployBot) GetServer(id int) (*Server, error) {
-	content, err := d.getContent(fmt.Sprintf("servers/%d", id))
+	server := new(Server)
+	err := d.fetch(fmt.Sprintf("servers/%d", id), server)
 	if err != nil {
 		return nil, err
 	}
-	var server Server
-	err = json.Unmarshal(content, &server)
-	if err != nil {
-		return nil, err
-	}
-
-	return &server, err
+	return server, err
 }
 
 func (d *DeployBot) Refresh(repository *Repository) error {
