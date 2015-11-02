@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"github.com/BurntSushi/toml"
 	"os"
 	"path/filepath"
@@ -34,4 +35,10 @@ func (c *Config) Alias(v string) (int, error) {
 	} else {
 		return strconv.Atoi(v)
 	}
+}
+
+func (c *Config) Dump() (*bytes.Buffer, error) {
+	buf := new(bytes.Buffer)
+	err := toml.NewEncoder(buf).Encode(config)
+	return buf, err
 }

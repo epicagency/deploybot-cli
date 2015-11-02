@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"os"
@@ -69,8 +68,10 @@ func main() {
 	case aliasesCommand.FullCommand():
 		exportAliases()
 	case dumpConfigCommand.FullCommand():
-		b, _ := json.Marshal(config)
-		os.Stdout.Write(b)
-
+		if buf, err := config.Dump(); err == nil {
+			fmt.Println(buf.String())
+		} else {
+			fmt.Println(err)
+		}
 	}
 }
