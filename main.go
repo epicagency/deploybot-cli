@@ -10,7 +10,7 @@ import (
 var (
 	app                                = kingpin.New("deploybot-cli", "DeployBot command line client")
 	verbose                            = app.Flag("verbose", "Verbose").Short('v').Bool()
-	repositoryIdFlag                   = app.Flag("repository_id", "Repository id (applies to select commands)").Short('r').Int()
+	repositoryIdFlag                   = app.Flag("repository_id", "Repository id (applies to select commands)").Short('r').String()
 	environmentIdFlag                  = app.Flag("environment_id", "Environment id (applies to select commands)").Short('e').String()
 	userIdFlag                         = app.Flag("user_id", "User id (applies to select commands)").Short('u').Int()
 	serverIdFlag                       = app.Flag("server_id", "Server id (applies to select commands)").Short('s').Int()

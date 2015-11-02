@@ -28,8 +28,13 @@ func showRepository() {
 	var (
 		repository *Repository
 		err        error
+		id         int
 	)
-	if repository, err = bot.GetRepository(*repositoryIdFlag); err != nil {
+	if id, err = config.Alias(*repositoryIdFlag); err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
+	if repository, err = bot.GetRepository(id); err != nil {
 		fmt.Println(err)
 		os.Exit(-1)
 	}
@@ -44,9 +49,14 @@ func listEnvironments() {
 	var (
 		environments *Environments
 		err          error
+		id           int
 	)
-	if *repositoryIdFlag != 0 {
-		environments, err = bot.GetEnvironmentsByRepository(*repositoryIdFlag)
+	if id, err = config.Alias(*repositoryIdFlag); err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
+	if id != 0 {
+		environments, err = bot.GetEnvironmentsByRepository(id)
 	} else {
 		environments, err = bot.GetEnvironments()
 	}
@@ -122,12 +132,21 @@ func listServers() {
 	var (
 		servers *Servers
 		err     error
+		id      int
 	)
-	if environmentIdFlag != nil {
-		id, _ := config.Alias(*environmentIdFlag)
+
+	if *environmentIdFlag != "" {
+		if id, err = config.Alias(*environmentIdFlag); err != nil {
+			fmt.Println(err)
+			os.Exit(-1)
+		}
 		servers, err = bot.GetServersByEnvironment(id)
-	} else if *repositoryIdFlag != 0 {
-		servers, err = bot.GetServersByRepository(*repositoryIdFlag)
+	} else if *repositoryIdFlag != "" {
+		if id, err = config.Alias(*repositoryIdFlag); err != nil {
+			fmt.Println(err)
+			os.Exit(-1)
+		}
+		servers, err = bot.GetServersByRepository(id)
 	} else {
 		servers, err = bot.GetServers()
 	}
@@ -166,10 +185,14 @@ func refreshRepository() {
 	var (
 		repository *Repository
 		err        error
+		id         int
 	)
 
-	repository, err = bot.GetRepository(*repositoryIdFlag)
-	if err != nil {
+	if id, err = config.Alias(*repositoryIdFlag); err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
+	if repository, err = bot.GetRepository(id); err != nil {
 		fmt.Println(err)
 		os.Exit(-1)
 	}
@@ -243,8 +266,10 @@ func exportAliases() {
 
 	fmt.Printf("[aliases]\n")
 	for _, repository := range repositories.Entries {
+		fmt.Printf("# %s\n", repository.Title)
+		fmt.Printf("%s = %d\n", slug.Slug(repository.Title), repository.Id)
 		for _, environment := range mappedEnvironments[repository.Id] {
-			fmt.Printf("%s-%s = %d\n", slug.Slug(repository.Title), slug.Slug(environment.Name), environment.Id)
+			fmt.Printf("\t%s-%s = %d\n", slug.Slug(repository.Title), slug.Slug(environment.Name), environment.Id)
 		}
 	}
 

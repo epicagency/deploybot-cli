@@ -27,7 +27,9 @@ func (c *Config) Load(path string) error {
 }
 
 func (c *Config) Alias(v string) (int, error) {
-	if c.Aliases[v] != 0 {
+	if v == "" {
+		return 0, nil
+	} else if c.Aliases[v] != 0 {
 		return c.Aliases[v], nil
 	} else {
 		return strconv.Atoi(v)
